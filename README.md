@@ -4,7 +4,10 @@ This project showcases my skills, experiences, and some of the projects I have w
 where potential collaborators, employers, or clients can learn more about me.
 
 📍 Live Demo
-🔗 Visit my live portfolio here
+
+[🔗 Visit my live portfolio here](https://iyampaye.github.io/ribertportfolio/)
+
+
 
 
 📖 About The Project
