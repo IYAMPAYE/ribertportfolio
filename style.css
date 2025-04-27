@@ -949,3 +949,37 @@ body, p, h1, h2, h3, h4, h5, h6 {
     max-width: 100%;
   }
 }
+
+/* Mobile Sidebar and Main Content Fix */
+@media (max-width: 767px) {
+  .aside {
+    width: 220px;
+    left: -220px;
+    z-index: 100;
+    transition: left 0.3s;
+    position: fixed;
+    height: 100vh;
+    background: var(--bg-black100);
+    box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+  }
+  .aside.open {
+    left: 0;
+  }
+  .nav-toggler {
+    display: flex !important;
+    position: fixed;
+    left: 15px !important;
+    top: 15px !important;
+    z-index: 200;
+    background: var(--bg-black100);
+  }
+  .main-content,
+  .section {
+    left: 0 !important;
+    padding-left: 0 !important;
+    position: relative !important;
+  }
+  .section {
+    padding: 0 10px !important;
+  }
+}
