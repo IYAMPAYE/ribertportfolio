@@ -590,6 +590,12 @@ body.dark .portfolio-item-inner:hover {
 }
 
 @media (max-width: 767px) {
+    .section {
+        display: none;
+    }
+    .section.active {
+        display: block;
+    }
 
     .portfolio .portfolio-item, .service .service-item, .contact .contact-form .col-6 { flex: 0 0 100%; max-width: 100%; }
 }
