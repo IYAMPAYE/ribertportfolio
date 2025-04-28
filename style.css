@@ -627,8 +627,10 @@ body.dark .portfolio-item-inner:hover {
         display: block !important;
     }
     .portfolio.section {
-        max-height: none !important;
-        overflow-y: visible !important;
+        display: none !important;
+    }
+    .portfolio.section.active {
+        display: block !important;
     }
     .home {
         flex-direction: column;
