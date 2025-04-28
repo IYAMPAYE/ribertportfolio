@@ -48,6 +48,13 @@ const nav = document.querySelector(".nav"),
       allSection = document.querySelectorAll(".section"),
       totalSection = allSection.length;
 
+// Remove any scroll-related sidebar behavior
+window.addEventListener("scroll", () => {
+    if(document.querySelector(".style-switcher").classList.contains("open")) {
+        document.querySelector(".style-switcher").classList.remove("open");
+    }
+});
+
 for (let i = 0; i < totalNavList; i++) {
     const a = navList[i].querySelector("a");
     a.addEventListener("click", function () {
@@ -108,26 +115,30 @@ function showSection(element) {
 const navTogglerBtn = document.querySelector(".nav-toggler"),
       aside = document.querySelector(".aside");
 
-navTogglerBtn.addEventListener("click", asideSectionTogglerBtn);
-
-function asideSectionTogglerBtn() {
+// Only toggle sidebar on explicit click
+navTogglerBtn.addEventListener("click", () => {
     aside.classList.toggle("open");
     navTogglerBtn.classList.toggle("open");
     for (let i = 0; i < totalSection; i++) {
         allSection[i].classList.toggle("open");
     }
-}
+});
 
-// Add event listener to close sidebar when clicking outside
+// Close sidebar when clicking outside on mobile
 document.addEventListener('click', (e) => {
-    const aside = document.querySelector('.aside');
-    const navToggler = document.querySelector('.nav-toggler');
-    
-    if (window.innerWidth < 1200 && 
-        aside.classList.contains('open') && 
-        !aside.contains(e.target) && 
-        e.target !== navToggler) {
-        asideSectionTogglerBtn();
+    if (window.innerWidth < 1200) {
+        const aside = document.querySelector('.aside');
+        const navToggler = document.querySelector('.nav-toggler');
+        
+        if (aside.classList.contains('open') && 
+            !aside.contains(e.target) && 
+            e.target !== navToggler) {
+            aside.classList.remove("open");
+            navToggler.classList.remove("open");
+            for (let i = 0; i < totalSection; i++) {
+                allSection[i].classList.remove("open");
+            }
+        }
     }
 });
 
