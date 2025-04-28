@@ -809,8 +809,16 @@ color-5.css
 
 /* Portfolio Filter */
 .portfolio-filter {
-    margin-bottom: 30px;
+    margin-bottom: 8px !important;
     text-align: center;
+}
+
+.portfolio .portfolio-heading {
+    margin-bottom: 18px !important;
+}
+
+.portfolio .row.portfolio-items {
+    margin-top: 0 !important;
 }
 
 .portfolio-filter .filter-btn {
@@ -1023,4 +1031,20 @@ body, p, h1, h2, h3, h4, h5, h6 {
     max-height: 100vh;
     display: block !important;
   }
+}
+
+/* Highlight Award/Badge in Portfolio Card */
+.portfolio-info .award-highlight {
+    display: inline-block;
+    background: #3498db;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.08em;
+    padding: 6px 16px;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    margin-top: 2px;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+    letter-spacing: 0.5px;
+    text-align: center;
 }
