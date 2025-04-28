@@ -67,7 +67,6 @@ for (let i = 0; i < totalNavList; i++) {
         }
         this.classList.add("active");
         showSection(this);
-        
         // Only show sidebar for portfolio section on mobile
         if (window.innerWidth < 1200) {
             const target = this.getAttribute("href").split("#")[1];
@@ -84,6 +83,14 @@ for (let i = 0; i < totalNavList; i++) {
                     allSection[i].classList.remove("open");
                 }
             }
+            // Always close sidebar after clicking any nav link (including Portfolio)
+            setTimeout(() => {
+                aside.classList.remove("open");
+                navTogglerBtn.classList.remove("open");
+                for (let i = 0; i < totalSection; i++) {
+                    allSection[i].classList.remove("open");
+                }
+            }, 200); // slight delay for smooth transition
         }
     });
 }
@@ -113,17 +120,6 @@ function showSection(element) {
             item.style.display = 'block';
             item.style.opacity = '1';
         });
-        
-        // Reinitialize Isotope if needed
-        if (portfolioContainer) {
-            const iso = new Isotope(portfolioContainer, {
-                itemSelector: '.portfolio-item',
-                layoutMode: 'fitRows',
-                filter: '*'
-            });
-            iso.arrange({ filter: '*' });
-            iso.layout();
-        }
     }
 }
 
@@ -176,36 +172,12 @@ window.addEventListener('scroll', () => {
 // Portfolio Filtering
 const portfolioContainer = document.querySelector('.portfolio-items');
 if (portfolioContainer) {
-    // Initialize Isotope with a delay to ensure DOM is ready
-    setTimeout(() => {
-        const iso = new Isotope(portfolioContainer, {
-            itemSelector: '.portfolio-item',
-            layoutMode: 'fitRows',
-            filter: '*'
-        });
-
-        // Force show all items initially
-        iso.arrange({ filter: '*' });
-        iso.layout();
-
-        // Make sure all portfolio items are visible
-        const portfolioItems = document.querySelectorAll('.portfolio-item');
-        portfolioItems.forEach(item => {
-            item.style.display = 'block';
-            item.style.opacity = '1';
-        });
-
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                
-                const filterValue = this.getAttribute('data-filter');
-                iso.arrange({ filter: filterValue });
-            });
-        });
-    }, 100);
+    // Make sure all portfolio items are visible
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+    portfolioItems.forEach(item => {
+        item.style.display = 'block';
+        item.style.opacity = '1';
+    });
 }
 
 // GSAP Animations
@@ -224,15 +196,6 @@ if (typeof gsap !== 'undefined') {
                 toggleActions: "play none none reverse"
             }
         });
-    });
-
-    // Animate filter buttons
-    gsap.from('.filter-btn', {
-        y: -20,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "power2.out"
     });
 }
 
