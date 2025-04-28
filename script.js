@@ -48,7 +48,7 @@ const nav = document.querySelector(".nav"),
       allSection = document.querySelectorAll(".section"),
       totalSection = allSection.length;
 
-// Remove any scroll-related sidebar behavior
+// Remove scroll event listener that might affect sidebar
 window.addEventListener("scroll", () => {
     if(document.querySelector(".style-switcher").classList.contains("open")) {
         document.querySelector(".style-switcher").classList.remove("open");
@@ -67,8 +67,23 @@ for (let i = 0; i < totalNavList; i++) {
         }
         this.classList.add("active");
         showSection(this);
+        
+        // Only show sidebar for portfolio section on mobile
         if (window.innerWidth < 1200) {
-            asideSectionTogglerBtn();
+            const target = this.getAttribute("href").split("#")[1];
+            if (target === 'portfolio') {
+                aside.classList.add("open");
+                navTogglerBtn.classList.add("open");
+                for (let i = 0; i < totalSection; i++) {
+                    allSection[i].classList.add("open");
+                }
+            } else {
+                aside.classList.remove("open");
+                navTogglerBtn.classList.remove("open");
+                for (let i = 0; i < totalSection; i++) {
+                    allSection[i].classList.remove("open");
+                }
+            }
         }
     });
 }
@@ -115,12 +130,14 @@ function showSection(element) {
 const navTogglerBtn = document.querySelector(".nav-toggler"),
       aside = document.querySelector(".aside");
 
-// Only toggle sidebar on explicit click
+// Menu button functionality - only show sidebar on click
 navTogglerBtn.addEventListener("click", () => {
-    aside.classList.toggle("open");
-    navTogglerBtn.classList.toggle("open");
-    for (let i = 0; i < totalSection; i++) {
-        allSection[i].classList.toggle("open");
+    if (window.innerWidth < 1200) {
+        aside.classList.toggle("open");
+        navTogglerBtn.classList.toggle("open");
+        for (let i = 0; i < totalSection; i++) {
+            allSection[i].classList.toggle("open");
+        }
     }
 });
 
@@ -135,6 +152,20 @@ document.addEventListener('click', (e) => {
             e.target !== navToggler) {
             aside.classList.remove("open");
             navToggler.classList.remove("open");
+            for (let i = 0; i < totalSection; i++) {
+                allSection[i].classList.remove("open");
+            }
+        }
+    }
+});
+
+// Prevent sidebar from showing on scroll
+window.addEventListener('scroll', () => {
+    if (window.innerWidth < 1200) {
+        const aside = document.querySelector('.aside');
+        if (aside.classList.contains('open')) {
+            aside.classList.remove("open");
+            navTogglerBtn.classList.remove("open");
             for (let i = 0; i < totalSection; i++) {
                 allSection[i].classList.remove("open");
             }
