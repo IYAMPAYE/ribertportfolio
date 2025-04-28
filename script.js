@@ -71,9 +71,6 @@ for (let i = 0; i < totalNavList; i++) {
         if (window.innerWidth < 1200) {
             aside.classList.remove("open");
             navTogglerBtn.classList.remove("open");
-            for (let i = 0; i < totalSection; i++) {
-                allSection[i].classList.remove("open");
-            }
         }
     });
 }
@@ -115,9 +112,6 @@ navTogglerBtn.addEventListener("click", (e) => {
     if (window.innerWidth < 1200) {
         aside.classList.toggle("open");
         navTogglerBtn.classList.toggle("open");
-        for (let i = 0; i < totalSection; i++) {
-            allSection[i].classList.toggle("open");
-        }
     }
 });
 
@@ -131,9 +125,6 @@ document.addEventListener('click', (e) => {
             e.target !== navToggler) {
             aside.classList.remove("open");
             navToggler.classList.remove("open");
-            for (let i = 0; i < totalSection; i++) {
-                allSection[i].classList.remove("open");
-            }
         }
     }
 });
@@ -145,9 +136,6 @@ window.addEventListener('scroll', () => {
         if (aside.classList.contains('open')) {
             aside.classList.remove("open");
             navTogglerBtn.classList.remove("open");
-            for (let i = 0; i < totalSection; i++) {
-                allSection[i].classList.remove("open");
-            }
         }
     }
 });
