@@ -67,30 +67,13 @@ for (let i = 0; i < totalNavList; i++) {
         }
         this.classList.add("active");
         showSection(this);
-        // Only show sidebar for portfolio section on mobile
+        // Always close sidebar after clicking any nav link (on mobile)
         if (window.innerWidth < 1200) {
-            const target = this.getAttribute("href").split("#")[1];
-            if (target === 'portfolio') {
-                aside.classList.add("open");
-                navTogglerBtn.classList.add("open");
-                for (let i = 0; i < totalSection; i++) {
-                    allSection[i].classList.add("open");
-                }
-            } else {
-                aside.classList.remove("open");
-                navTogglerBtn.classList.remove("open");
-                for (let i = 0; i < totalSection; i++) {
-                    allSection[i].classList.remove("open");
-                }
+            aside.classList.remove("open");
+            navTogglerBtn.classList.remove("open");
+            for (let i = 0; i < totalSection; i++) {
+                allSection[i].classList.remove("open");
             }
-            // Always close sidebar after clicking any nav link (including Portfolio)
-            setTimeout(() => {
-                aside.classList.remove("open");
-                navTogglerBtn.classList.remove("open");
-                for (let i = 0; i < totalSection; i++) {
-                    allSection[i].classList.remove("open");
-                }
-            }, 200); // slight delay for smooth transition
         }
     });
 }
@@ -127,7 +110,8 @@ const navTogglerBtn = document.querySelector(".nav-toggler"),
       aside = document.querySelector(".aside");
 
 // Menu button functionality - only show sidebar on click
-navTogglerBtn.addEventListener("click", () => {
+navTogglerBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevent bubbling to document
     if (window.innerWidth < 1200) {
         aside.classList.toggle("open");
         navTogglerBtn.classList.toggle("open");
@@ -142,7 +126,6 @@ document.addEventListener('click', (e) => {
     if (window.innerWidth < 1200) {
         const aside = document.querySelector('.aside');
         const navToggler = document.querySelector('.nav-toggler');
-        
         if (aside.classList.contains('open') && 
             !aside.contains(e.target) && 
             e.target !== navToggler) {
@@ -155,7 +138,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Prevent sidebar from showing on scroll
+// Prevent sidebar from showing on scroll (remove any logic that opens it)
 window.addEventListener('scroll', () => {
     if (window.innerWidth < 1200) {
         const aside = document.querySelector('.aside');
