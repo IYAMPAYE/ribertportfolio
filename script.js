@@ -12,13 +12,6 @@ styleSwitcherToggle.addEventListener("click", () => {
     document.querySelector(".style-switcher").classList.toggle("open");
 });
 
-// Hide Style Switcher on Scroll
-window.addEventListener("scroll", () => {
-    if(document.querySelector(".style-switcher").classList.contains("open")) {
-        document.querySelector(".style-switcher").classList.remove("open");
-    }
-});
-
 // Theme Colors
 const alternateStyles = document.querySelectorAll(".alternate-style");
 function setActiveStyle(color) {
@@ -124,6 +117,19 @@ function asideSectionTogglerBtn() {
         allSection[i].classList.toggle("open");
     }
 }
+
+// Add event listener to close sidebar when clicking outside
+document.addEventListener('click', (e) => {
+    const aside = document.querySelector('.aside');
+    const navToggler = document.querySelector('.nav-toggler');
+    
+    if (window.innerWidth < 1200 && 
+        aside.classList.contains('open') && 
+        !aside.contains(e.target) && 
+        e.target !== navToggler) {
+        asideSectionTogglerBtn();
+    }
+});
 
 // Portfolio Filtering
 const portfolioContainer = document.querySelector('.portfolio-items');
