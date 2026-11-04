@@ -1,198 +1,477 @@
-// Typing Animation
-const typing = new Typed(".typing", {
-    strings: ["Data Scientist", "Web Developer", "UI/UX Designer", "Database Administrator"],
-    typeSpeed: 100,
-    backSpeed: 60,
-    loop: true
-});
 
-// Theme Switcher
-const styleSwitcherToggle = document.querySelector(".style-switcher-toggler");
-styleSwitcherToggle.addEventListener("click", () => {
-    document.querySelector(".style-switcher").classList.toggle("open");
-});
+/* =========================================================
+   IYAMPAYE RIBERT — PORTFOLIO JAVASCRIPT
+   Navigation, typing, themes, portfolio filters and forms
+   ========================================================= */
 
-// Theme Colors
-const alternateStyles = document.querySelectorAll(".alternate-style");
-function setActiveStyle(color) {
-    alternateStyles.forEach((style) => {
-        if(color === style.getAttribute("title")) {
-            style.removeAttribute("disabled");
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =====================================================
+       1. TYPING ANIMATION
+       ===================================================== */
+
+    const typingElement = document.querySelector(".typing");
+
+    if (typingElement && typeof Typed !== "undefined") {
+        new Typed(".typing", {
+            strings: [
+                "Data Scientist",
+                "Web Developer",
+                "UI/UX Designer",
+                "Database Administrator"
+            ],
+            typeSpeed: 70,
+            backSpeed: 40,
+            backDelay: 1800,
+            loop: true,
+            smartBackspace: true
+        });
+    }
+
+
+    /* =====================================================
+       2. ELEMENT REFERENCES
+       ===================================================== */
+
+    const body = document.body;
+
+    const styleSwitcher = document.querySelector(".style-switcher");
+    const styleSwitcherToggle = document.querySelector(".style-switcher-toggler");
+
+    const dayNight = document.querySelector(".day-night");
+
+    const aside = document.querySelector(".aside");
+    const navTogglerBtn = document.querySelector(".nav-toggler");
+
+    const nav = document.querySelector(".nav");
+    const navLinks = nav ? nav.querySelectorAll("a") : [];
+
+    const allSections = document.querySelectorAll(".section");
+
+
+    /* =====================================================
+       3. STYLE SWITCHER
+       ===================================================== */
+
+    if (styleSwitcher && styleSwitcherToggle) {
+
+        styleSwitcherToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            styleSwitcher.classList.toggle("open");
+        });
+
+        // Close the style switcher when clicking elsewhere
+        document.addEventListener("click", function (event) {
+
+            if (
+                styleSwitcher.classList.contains("open") &&
+                !styleSwitcher.contains(event.target)
+            ) {
+                styleSwitcher.classList.remove("open");
+            }
+
+        });
+
+    }
+
+
+    /* =====================================================
+       4. THEME COLOR SWITCHER
+       ===================================================== */
+
+    const alternateStyles = document.querySelectorAll(".alternate-style");
+
+    window.setActiveStyle = function (color) {
+
+        alternateStyles.forEach(function (style) {
+
+            if (color === style.getAttribute("title")) {
+                style.removeAttribute("disabled");
+            } else {
+                style.setAttribute("disabled", "true");
+            }
+
+        });
+
+    };
+
+
+    /* =====================================================
+       5. LIGHT AND DARK MODE
+       ===================================================== */
+
+    function updateThemeIcon() {
+
+        if (!dayNight) return;
+
+        const icon = dayNight.querySelector("i");
+
+        if (!icon) return;
+
+        if (body.classList.contains("dark")) {
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+        } else {
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
         }
-        else {
-            style.setAttribute("disabled", "true");
+
+    }
+
+    // Restore the user's previous theme preference
+    try {
+
+        const savedTheme = localStorage.getItem("portfolio-theme");
+
+        if (savedTheme === "dark") {
+            body.classList.add("dark");
+        } else if (savedTheme === "light") {
+            body.classList.remove("dark");
         }
-    });
-}
 
-// Theme Light and Dark Mode
-const dayNight = document.querySelector(".day-night");
-dayNight.addEventListener("click", () => {
-    dayNight.querySelector("i").classList.toggle("fa-sun");
-    dayNight.querySelector("i").classList.toggle("fa-moon");
-    document.body.classList.toggle("dark");
-});
-window.addEventListener("load", () => {
-    if(document.body.classList.contains("dark")) {
-        dayNight.querySelector("i").classList.add("fa-sun");
+    } catch (error) {
+        console.warn("Theme preference could not be restored.");
     }
-    else {
-        dayNight.querySelector("i").classList.add("fa-moon");
+
+    updateThemeIcon();
+
+    if (dayNight) {
+
+        dayNight.addEventListener("click", function () {
+
+            body.classList.toggle("dark");
+
+            updateThemeIcon();
+
+            try {
+                localStorage.setItem(
+                    "portfolio-theme",
+                    body.classList.contains("dark") ? "dark" : "light"
+                );
+            } catch (error) {
+                console.warn("Theme preference could not be saved.");
+            }
+
+        });
+
     }
-});
 
-// Navigation Functionality
-const nav = document.querySelector(".nav"),
-      navList = nav.querySelectorAll("li"),
-      totalNavList = navList.length,
-      allSection = document.querySelectorAll(".section"),
-      totalSection = allSection.length;
 
-// Remove scroll event listener that might affect sidebar
-window.addEventListener("scroll", () => {
-    if(document.querySelector(".style-switcher").classList.contains("open")) {
-        document.querySelector(".style-switcher").classList.remove("open");
+    /* =====================================================
+       6. NAVIGATION
+       ===================================================== */
+
+    function removeBackSection() {
+
+        allSections.forEach(function (section) {
+            section.classList.remove("back-section");
+        });
+
     }
-});
 
-for (let i = 0; i < totalNavList; i++) {
-    const a = navList[i].querySelector("a");
-    a.addEventListener("click", function () {
+    function showSection(element) {
+
+        const href = element.getAttribute("href");
+
+        if (!href || !href.startsWith("#")) return;
+
+        const targetSection = document.querySelector(href);
+
+        if (!targetSection || !targetSection.classList.contains("section")) {
+            return;
+        }
+
         removeBackSection();
-        for (let j = 0; j < totalNavList; j++) {
-            if (navList[j].querySelector("a").classList.contains("active")) {
-                addBackSection(j);
-            }
-            navList[j].querySelector("a").classList.remove("active");
-        }
-        this.classList.add("active");
-        showSection(this);
-        // Always close sidebar after clicking any nav link (on mobile)
+
+        allSections.forEach(function (section) {
+            section.classList.remove("active");
+        });
+
+        targetSection.classList.add("active");
+
+        // Keep navigation links synchronized
+        navLinks.forEach(function (link) {
+            link.classList.remove("active");
+        });
+
+        element.classList.add("active");
+
+        // Close the mobile navigation after selecting a section
         if (window.innerWidth < 1200) {
-            aside.classList.remove("open");
-            navTogglerBtn.classList.remove("open");
+            closeSidebar();
         }
-    });
-}
 
-function removeBackSection() {
-    for (let i = 0; i < totalSection; i++) {
-        allSection[i].classList.remove("back-section");
+        // Close the colour switcher when changing sections
+        if (styleSwitcher) {
+            styleSwitcher.classList.remove("open");
+        }
+
+        // Start the new section from the top
+        targetSection.scrollTop = 0;
+
     }
-}
 
-function addBackSection(num) {
-    allSection[num].classList.add("back-section");
-}
+    navLinks.forEach(function (link) {
 
-function showSection(element) {
-    for (let i = 0; i < totalSection; i++) {
-        allSection[i].classList.remove("active");
-    }
-    const target = element.getAttribute("href").split("#")[1];
-    const targetSection = document.querySelector("#" + target);
-    targetSection.classList.add("active");
+        link.addEventListener("click", function (event) {
 
-    // If portfolio section is shown, ensure items are visible
-    if (target === 'portfolio') {
-        const portfolioItems = document.querySelectorAll('.portfolio-item');
-        portfolioItems.forEach(item => {
-            item.style.display = 'block';
-            item.style.opacity = '1';
+            const href = this.getAttribute("href");
+
+            // Only handle internal section navigation
+            if (!href || !href.startsWith("#")) return;
+
+            const target = document.querySelector(href);
+
+            if (!target || !target.classList.contains("section")) return;
+
+            event.preventDefault();
+
+            showSection(this);
+
         });
-    }
-}
 
-const navTogglerBtn = document.querySelector(".nav-toggler"),
-      aside = document.querySelector(".aside");
+    });
 
-// Menu button functionality - only show sidebar on click
-navTogglerBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent bubbling to document
-    if (window.innerWidth < 1200) {
-        aside.classList.toggle("open");
-        navTogglerBtn.classList.toggle("open");
-    }
-});
 
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', (e) => {
-    if (window.innerWidth < 1200) {
-        const aside = document.querySelector('.aside');
-        const navToggler = document.querySelector('.nav-toggler');
-        if (aside.classList.contains('open') && 
-            !aside.contains(e.target) && 
-            e.target !== navToggler) {
+    /* =====================================================
+       7. MOBILE SIDEBAR
+       ===================================================== */
+
+    function closeSidebar() {
+
+        if (aside) {
             aside.classList.remove("open");
-            navToggler.classList.remove("open");
         }
-    }
-});
 
-// Prevent sidebar from showing on scroll (remove any logic that opens it)
-window.addEventListener('scroll', () => {
-    if (window.innerWidth < 1200) {
-        const aside = document.querySelector('.aside');
-        if (aside.classList.contains('open')) {
-            aside.classList.remove("open");
+        if (navTogglerBtn) {
             navTogglerBtn.classList.remove("open");
         }
+
     }
-});
 
-// Portfolio Filtering
-const portfolioContainer = document.querySelector('.portfolio-items');
-if (portfolioContainer) {
-    // Make sure all portfolio items are visible
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-    portfolioItems.forEach(item => {
-        item.style.display = 'block';
-        item.style.opacity = '1';
-    });
-}
+    if (navTogglerBtn && aside) {
 
-// GSAP Animations
-if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    
-    // Animate portfolio items
-    gsap.utils.toArray('.portfolio-item').forEach(item => {
-        gsap.from(item, {
-            y: 50,
-            opacity: 0,
-            duration: 1,
-            scrollTrigger: {
-                trigger: item,
-                start: "top bottom-=100",
-                toggleActions: "play none none reverse"
+        navTogglerBtn.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            if (window.innerWidth < 1200) {
+
+                aside.classList.toggle("open");
+
+                navTogglerBtn.classList.toggle("open");
+
             }
+
         });
-    });
-}
 
-// Initialize AOS
-if (typeof AOS !== 'undefined') {
-    AOS.init({
-        duration: 1000,
-        once: true,
-        offset: 100
-    });
-}
+        // Close the menu when clicking outside it
+        document.addEventListener("click", function (event) {
 
-// Contact Form Validation and Submission
-function validateForm() {
-    const form = document.querySelector('.contact-form form');
-    const name = form.querySelector('input[name="entry.XXXXXXXX"]').value;
-    const email = form.querySelector('input[type="email"]').value;
-    const subject = form.querySelector('input[name="entry.XXXXXXXX"]').value;
-    const message = form.querySelector('textarea').value;
+            if (
+                window.innerWidth < 1200 &&
+                aside.classList.contains("open") &&
+                !aside.contains(event.target)
+            ) {
+                closeSidebar();
+            }
 
-    if (!name || !email || !subject || !message) {
-        alert('Please fill in all fields');
-        return false;
+        });
+
+        // Close the mobile menu when the screen becomes desktop-sized
+        window.addEventListener("resize", function () {
+
+            if (window.innerWidth >= 1200) {
+                closeSidebar();
+            }
+
+        });
+
     }
 
-    // Show success message
-    alert('Thank you for your message! We will get back to you soon.');
-    return true;
-}
+
+    /* =====================================================
+       8. PORTFOLIO FILTERING
+       ===================================================== */
+
+    const portfolioContainer = document.querySelector(".portfolio-items");
+
+    const portfolioItems = portfolioContainer
+        ? portfolioContainer.querySelectorAll(".portfolio-item")
+        : [];
+
+    const filterButtons = document.querySelectorAll(".portfolio-filter .filter-btn");
+
+    if (portfolioContainer && filterButtons.length > 0) {
+
+        filterButtons.forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                // Update the selected filter button
+                filterButtons.forEach(function (filterButton) {
+                    filterButton.classList.remove("active");
+                });
+
+                this.classList.add("active");
+
+                const filterValue = this.getAttribute("data-filter") || "all";
+
+                portfolioItems.forEach(function (item) {
+
+                    let shouldShow = false;
+
+                    if (
+                        filterValue === "all" ||
+                        filterValue === "*" ||
+                        filterValue === ".all"
+                    ) {
+
+                        shouldShow = true;
+
+                    } else {
+
+                        // Support CSS class filters such as .web or .data
+                        try {
+
+                            if (filterValue.startsWith(".")) {
+                                shouldShow = item.matches(filterValue);
+                            } else {
+
+                                // Also support category names
+                                const category = item.getAttribute("data-category");
+
+                                shouldShow =
+                                    category === filterValue ||
+                                    item.classList.contains(filterValue);
+
+                            }
+
+                        } catch (error) {
+
+                            console.warn("Invalid portfolio filter:", filterValue);
+
+                        }
+
+                    }
+
+                    item.classList.toggle("hidden", !shouldShow);
+
+                });
+
+            });
+
+        });
+
+    }
+
+
+    /* =====================================================
+       9. CONTACT FORM VALIDATION
+       ===================================================== */
+
+    const contactForm = document.querySelector(".contact-form form");
+
+    if (contactForm) {
+
+        const formFields = contactForm.querySelectorAll(
+            'input:not([type="hidden"]):not([type="submit"]):not([type="button"]), textarea'
+        );
+
+        // Ensure visible form fields are validated
+        formFields.forEach(function (field) {
+
+            field.required = true;
+
+        });
+
+        contactForm.addEventListener("submit", function (event) {
+
+            let formIsValid = true;
+
+            formFields.forEach(function (field) {
+
+                const value = field.value.trim();
+
+                if (!value) {
+
+                    field.setCustomValidity("Please complete this field.");
+                    formIsValid = false;
+
+                } else {
+
+                    field.setCustomValidity("");
+
+                }
+
+            });
+
+            if (!formIsValid || !contactForm.checkValidity()) {
+
+                event.preventDefault();
+
+                contactForm.reportValidity();
+
+                return;
+
+            }
+
+            // Let the existing form action/backend process the submission.
+            // Do not display a success message before the server confirms it.
+
+        });
+
+        // Clear validation messages as the user edits fields
+        formFields.forEach(function (field) {
+
+            field.addEventListener("input", function () {
+                field.setCustomValidity("");
+            });
+
+        });
+
+    }
+
+
+    /* =====================================================
+       10. INITIAL NAVIGATION STATE
+       ===================================================== */
+
+    if (allSections.length > 0) {
+
+        const activeSection = document.querySelector(".section.active");
+
+        if (!activeSection) {
+
+            allSections[0].classList.add("active");
+
+        }
+
+    }
+
+    // Ensure the navigation has an active link
+    if (navLinks.length > 0) {
+
+        const activeLink = nav.querySelector("a.active");
+
+        if (!activeLink) {
+
+            const firstLink = navLinks[0];
+
+            if (firstLink) {
+                firstLink.classList.add("active");
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       11. INITIALIZATION COMPLETE
+       ===================================================== */
+
+    console.log("Portfolio JavaScript initialized successfully.");
+
+});
